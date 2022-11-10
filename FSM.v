@@ -49,18 +49,19 @@ always @(*)
              Busy_comb   ='b0;
            if (Data_Valid_FSM)
              begin
-            //# Busy_comb   ='b1;
+             Busy_comb   ='b1;
              next_state=START;
+             mux_sel_FSM ='b00;
              end
            else
              begin
-             //#Busy_comb   ='b0; 
+             Busy_comb   ='b0; 
              next_state=IDLE;
              end
             end     
 
     START :begin
-             mux_sel_FSM ='b00;
+             mux_sel_FSM ='b01;
              ser_en_FSM  ='b0;
              Busy_comb   ='b1;
              next_state  =DATA;             
@@ -73,15 +74,25 @@ always @(*)
              Busy_comb   ='b1;
 
            if(ser_done_FSM && PAR_EN_FSM)
+           begin
              next_state =PARITY;
+             mux_sel_FSM ='b10;
+           end
            else if (ser_done_FSM && !PAR_EN_FSM)
+           begin
              next_state =STOP;
-           else    
-             next_state =DATA;
+             
            end
 
+           else
+              begin    
+             next_state =DATA;
+             
+           end
+         end
+
     PARITY:begin
-             mux_sel_FSM ='b10;
+             mux_sel_FSM ='b11;
              ser_en_FSM  ='b0;
              Busy_comb   ='b1;
              next_state  =STOP;
@@ -90,7 +101,7 @@ always @(*)
     STOP  :begin
              mux_sel_FSM ='b11;
              ser_en_FSM  ='b0;
-             Busy_comb   ='b1;
+             Busy_comb   ='b0;
              next_state  =IDLE;
             end
     endcase
