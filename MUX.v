@@ -27,5 +27,4 @@ always@(*)
   else
   TX_OUT_MUX<=mux_comb; 
  end                    
- 
-endmodule
+ endmodule
